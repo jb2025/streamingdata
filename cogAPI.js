@@ -4,9 +4,9 @@ var fs = require('fs');
 var url = require('url');
 var image_original = 'local.jpg';
 var rawImageData = '';
-var decodedImage = '';
-var binaryImage = '';
-var decodedImage = '';
+// var decodedImage = '';
+// var binaryImage = '';
+// var decodedImage = '';
 // fs.readFile(image_original, function(err, original_data){
 //     // decodedImage = new Buffer(original_data, 'binary').toString('binary');
 //     decodedImage = original_data.toString('binary');
@@ -17,22 +17,22 @@ var decodedImage = '';
 //     // fs.writeFile('image_decoded.jpg', decodedImage, function(err) {});
 // });
 
-// fs.readFile('local.jpg', (err, data) =>{ 
-//     if (err) throw err;
-//     rawImageData = new Buffer(data.toString('base64'),'base64');
-//     console.log(rawImageData);
-//     jbCallback(data);
-// });
-
-fs.readFile('local.jpg', function(err, data){
-    var myArray = new ArrayBuffer(data.length);
-    var longInt8View = new Uint8Array(myArray);
-        for (var i=0; i< longInt8View.length; i++){
-        longInt8View[i] = i % 255;
-        }   // rawImageData = new Uint8Array(data);
-    console.log(myArray);
-    jbCallback(myArray);
+fs.readFile('local.jpg', (err, data) =>{ 
+    if (err) throw err;
+    rawImageData = new Buffer(data.toString('base64'),'base64');
+    console.log(rawImageData);
+    jbCallback(data);
 });
+
+// fs.readFile('local.jpg', function(err, data){
+//     var myArray = new ArrayBuffer(data.length);
+//     var longInt8View = new Uint8Array(myArray);
+//         for (var i=0; i< longInt8View.length; i++){
+//         longInt8View[i] = i % 255;
+//         }   // rawImageData = new Uint8Array(data);
+//     console.log(myArray);
+//     jbCallback(myArray);
+// });
 
 
 function jbCallback(e) {
@@ -53,7 +53,7 @@ var options = {
     headers: {
         'Content-Type': 'application/octet-stream',
         'Ocp-Apim-Subscription-Key': "e1c8d985f4e04a5aa7703cd3e8b0e38d",
-        // 'Content-Length': rawImageData.length,
+        'Content-Length': rawImageData.length,
     },
     // data:{
     //     mimeType: 'application/octet-stream',
