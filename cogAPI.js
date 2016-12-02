@@ -1,42 +1,76 @@
-//Change httpGetAsync function to send URL instead of raw image
-//in order for it to work, change type ot octet-stream
 //Microsoft Cognitive API Call
 // API URL : https://api.projectoxford.ai/emotion/v1.0/recognize?
-// no port assignment
-
-// var faceData = [];
-// var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 var fs = require('fs');
-// var xmlHttp = new XMLHttpRequest();
+var url = require('url');
+var image_original = 'local.jpg';
+var rawImageData = '';
+var decodedImage = '';
+var binaryImage = '';
+var decodedImage = '';
+// fs.readFile(image_original, function(err, original_data){
+//     // decodedImage = new Buffer(original_data, 'binary').toString('binary');
+//     decodedImage = original_data.toString('binary');
+//     console.log(decodedImage);
+//     jbCallback(decodedImage);
+//     // binaryImage = new Buffer(decodedImage,'binary');
+//     // console.log(binaryImage);
+//     // fs.writeFile('image_decoded.jpg', decodedImage, function(err) {});
+// });
 
-// Unsure how to create the right buffer / stream of data
-var rawImageData = fs.readFileSync('local.jpg');
+// fs.readFile('local.jpg', (err, data) =>{ 
+//     if (err) throw err;
+//     rawImageData = new Buffer(data.toString('base64'),'base64');
+//     console.log(rawImageData);
+//     jbCallback(data);
+// });
 
-var http = require('http');
+fs.readFile('local.jpg', function(err, data){
+    var myArray = new ArrayBuffer(data.length);
+    var longInt8View = new Uint8Array(myArray);
+        for (var i=0; i< longInt8View.length; i++){
+        longInt8View[i] = i % 255;
+        }   // rawImageData = new Uint8Array(data);
+    console.log(myArray);
+    jbCallback(myArray);
+});
+
+
+function jbCallback(e) {
+    post_req.write(e);
+    post_req.end();
+};
+
+
+
+var http = require('https');
 var util = require('util');
+var parsedURL = url.parse("https://api.projectoxford.ai/emotion/v1.0/recognize");
+console.log(rawImageData);
 var options = {
-    host: 'https://api.projectoxford.ai',
-    path: '/emotion/v1.0/recognize?',
+    host: parsedURL.host,
+    path: '/emotion/v1.0/recognize',
     method: 'POST',
     headers: {
         'Content-Type': 'application/octet-stream',
-        'Ocp-Apim-Subscription-Key': "e1c8d985f4e04a5aa7703cd3e8b0e38d"
+        'Ocp-Apim-Subscription-Key': "e1c8d985f4e04a5aa7703cd3e8b0e38d",
+        // 'Content-Length': rawImageData.length,
     },
-    postData:{
-        mimeType: 'application/octet-stream',
-        params:rawImageData
-    }
+    // data:{
+    //     mimeType: 'application/octet-stream',
+    //     params:rawImageData
+    // }
 };
 
-http.request(options, function(res) {
+var post_req = http.request(options, function(res) {
     console.log('STATUS: ' + res.statusCode);
     console.log('HEADERS: ' + JSON.stringify(res.headers));
 
     res.on('data', function (responseBody) {
         console.log('BODY: ' + util.inspect(responseBody, {showHidden: false, depth: null}));
+        console.log(responseBody);
         // Do your processing post async response
     });
-}).end();
+});
 
 // function httpGetAsync(theUrl)
 // {
